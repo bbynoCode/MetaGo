@@ -13,6 +13,17 @@ function App() {
 
   const [fileInfo, setFileInfo] = useState<FileInfo | null>(null)
 
+  let renderPhoto;
+  if (!fileInfo) {
+    renderPhoto = (
+      <img src='https://7958737.fs1.hubspotusercontent-na1.net/hubfs/7958737/Imported_Blog_Media/wails-desktop-apps.png' alt="Default" />
+    );
+  } else {
+    renderPhoto = (
+      <img src={`data:image/jpeg;base64,${fileInfo.fileBytes}`} alt={fileInfo.fileName} />
+    );
+  }
+
   return (
     <>
       <MenueBarUI
@@ -21,15 +32,9 @@ function App() {
         fileInfo={fileInfo}
       />
 
+      {renderPhoto}
+
         <div>
-        
-        </div>
-        <div className="columns-2">
-          <div className="container">
-            <img src={`data:image/jpeg;base64,${fileInfo?.fileBytes}`} />
-          </div>
-    
-          <div className="container bg-sky-100">
             <table className="table-auto align-center">
               <thead>
                 <tr>
@@ -52,8 +57,8 @@ function App() {
                 </tr>
               </tbody>
             </table>
-          </div>
         </div>
+            
     </>
   )
 }

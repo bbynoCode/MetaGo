@@ -2,7 +2,10 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
+	"io/ioutil"
+	"net/http"
 	"os"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -43,24 +46,43 @@ func (a *App) shutdown(ctx context.Context) {
 
 func (a *App) SelectFile() string {
 	file, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
-		Title: "Select a video file",
+		Title: "Select a Photo",
 	})
 	if err != nil {
 		return err.Error()
 	}
 
-	// get file info from file path
 	fileInfo, err := os.Lstat(file)
 
 	if err != nil {
 		return err.Error()
 	}
 
+	fileData, err := ioutil.ReadFile(file)
+	if err != nil {
+		return err.Error()
+	}
+
+	var b64encode string
+
+	mimeType := http.DetectContentType(fileData)
+
+	//This is to make sure the file loads correctly when we try to render it in the frontend
+	switch mimeType {
+	case "image/jpeg":
+		b64encode += "data:image/jpeg;base64,"
+	case "image/png":
+		b64encode += "data:image/png;base64,"
+	}
+
+	b64encode += base64.StdEncoding.EncodeToString(fileData)
+
 	jsonObj := map[string]interface{}{
-		"success":  true,
-		"fileName": fileInfo.Name(),
-		"fileSize": fileInfo.Size(),
-		"filePath": file,
+		"success":   true,
+		"fileName":  fileInfo.Name(),
+		"fileSize":  fileInfo.Size(),
+		"filePath":  file,
+		"fileBytes": fileData,
 	}
 
 	jsonBytes, err := json.Marshal(jsonObj)
@@ -68,27 +90,6 @@ func (a *App) SelectFile() string {
 		return err.Error()
 	}
 
-	//go ProcessFFmpegVideo(file, KB, a.ctx)
 	return string(jsonBytes)
+
 }
-
-// func (a *App) SelectFile() string {
-// 	file, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
-// 		Title: "Select a photo to edit",
-// 	})
-// 	if err != nil {
-// 		return err.Error()
-// 	}
-
-// 	// get file info from file path
-// 	fileInfo, err := os.Lstat(file)
-
-// 	if err != nil {
-// 		return err.Error()
-// 	}
-// 	return fileInfo.Name()
-// }
-
-// func (a *App) OpenFilePath(filepath string) {
-// 	runtime.BrowserOpenURL(a.ctx, filepath)
-// }

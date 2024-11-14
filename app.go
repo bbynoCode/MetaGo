@@ -82,7 +82,7 @@ func (a *App) SelectFile() string {
 		"fileName":  fileInfo.Name(),
 		"fileSize":  fileInfo.Size(),
 		"filePath":  file,
-		"fileBytes": fileData,
+		"fileBytes": b64encode,
 	}
 
 	jsonBytes, err := json.Marshal(jsonObj)

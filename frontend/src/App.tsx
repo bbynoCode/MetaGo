@@ -35,7 +35,7 @@ function App() {
     renderPhoto = (
       <div className="p-2 bg-gray-200 rounded-md border flex items-center justify-center">
         <img
-          src={`data:image/jpeg;base64,${fileInfo.fileBytes}`}
+          src={`${fileInfo.fileBytes}`}
           alt={fileInfo.fileName}
           className="max-w-full max-h-full"
         />

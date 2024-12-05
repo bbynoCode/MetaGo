@@ -1,10 +1,10 @@
 import React from 'react';
 
 type MetaDataTableProps = {
-    metadata: { [key: string]: string };
+    metadata?: { [key: string]: string };
 };
 
-const MetaDataTable: React.FC<MetaDataTableProps> = ({ metadata }) => {
+const MetaDataTable: React.FC<MetaDataTableProps> = ({ metadata = {"File":"Not Found"} }) => {
     return (
         <>
             {Object.entries(metadata).map(([key, value]) => (

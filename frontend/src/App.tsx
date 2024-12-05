@@ -7,6 +7,7 @@ export interface FileInfo {
   fileSize: number
   filePath: string
   fileBytes: string
+  fileMetaData: string
 }
 
 
@@ -14,14 +15,9 @@ function App() {
 
   const [fileInfo, setFileInfo] = useState<FileInfo | null>(null)
 
-  const metadata = {
-    "Camera": "Nikon D3500",
-    "Resolution": "6000x4000",
-    "ISO": "200",
-    "Aperture": "f/5.6",
-    "Shutter Speed": "1/200 sec",
-    "GPS": "Enabled"
-  };
+  // const metadata = {
+  //   "Photo": "Not Loaded"
+  // };
 
 
   let renderPhoto;
@@ -43,6 +39,15 @@ function App() {
     );
   }
 
+  let parsedMetaData;
+  try {
+    parsedMetaData = fileInfo?.fileMetaData ? JSON.parse(fileInfo.fileMetaData) : undefined;
+  } catch (error) {
+    console.error("Invalid metadata JSON:", error);
+    parsedMetaData = undefined;
+  }
+
+
   return (
     <>
 
@@ -62,7 +67,7 @@ function App() {
                   <h2 className="text-lg font-semibold mb-2">Photo Meta Data</h2>
                   <table className="min-w-full text-left">
                       <tbody>
-                        <MetaDataTable metadata={metadata} />
+                        <MetaDataTable metadata={parsedMetaData} />
                       </tbody>
                   </table>
               </div>

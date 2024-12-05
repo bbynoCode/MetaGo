@@ -21,17 +21,18 @@ const MenueBarUI = ({
     
         try {
           const fileData = await SelectFile();
-          const file = JSON.parse(fileData) as { fileName: string; fileSize: number; success: boolean, filePath: string, fileBytes: string};
+          const file = JSON.parse(fileData) as { fileName: string; fileSize: number; success: boolean, filePath: string, fileBytes: string, fileMetaData : string};
     
           if (!file.success) {
             throw new Error("File selection failed");
           }
-          console.log(file.fileBytes)
+          //console.log(file.fileBytes)
           setFileInfo({
             fileName: file.fileName,
             fileSize: file.fileSize,
             filePath: file.filePath,
-            fileBytes: file.fileBytes
+            fileBytes: file.fileBytes,
+            fileMetaData: file.fileMetaData
           });
 
         } catch (error) {

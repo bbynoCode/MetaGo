@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -77,12 +76,28 @@ func (a *App) SelectFile() string {
 
 	b64encode += base64.StdEncoding.EncodeToString(fileData)
 
+	metaDataObj := map[string]interface{}{
+		"Camera": "Nikon D3500",
+		"Resolution": "6000x4000",
+		"ISO": "200",
+		"Aperture": "f/5.6",
+		"Shutter Speed": "1/200 sec",
+		"GPS": "Enabled",
+		"Hello": "From Go!",
+	}
+
+	metaData, err := json.Marshal(metaDataObj)
+	if err != nil {
+		return err.Error()
+	}
+
 	jsonObj := map[string]interface{}{
 		"success":   true,
 		"fileName":  fileInfo.Name(),
 		"fileSize":  fileInfo.Size(),
 		"filePath":  file,
 		"fileBytes": b64encode,
+		"fileMetaData": string(metaData),
 	}
 
 	jsonBytes, err := json.Marshal(jsonObj)

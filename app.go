@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"os"
+	"log"
+	"fmt"
+	"github.com/dsoprea/go-exif/v3"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -57,7 +59,7 @@ func (a *App) SelectFile() string {
 		return err.Error()
 	}
 
-	fileData, err := ioutil.ReadFile(file)
+	fileData, err := os.ReadFile(file)
 	if err != nil {
 		return err.Error()
 	}
@@ -76,20 +78,50 @@ func (a *App) SelectFile() string {
 
 	b64encode += base64.StdEncoding.EncodeToString(fileData)
 
-	metaDataObj := map[string]interface{}{
-		"Camera": "Nikon D3500",
-		"Resolution": "6000x4000",
-		"ISO": "200",
-		"Aperture": "f/5.6",
-		"Shutter Speed": "1/200 sec",
-		"GPS": "Enabled",
-		"Hello": "From Go!",
+	// metaDataObj := map[string]interface{}{
+	// 	"Camera": "Nikon D3500",
+	// 	"Resolution": "6000x4000",
+	// 	"ISO": "200",
+	// 	"Aperture": "f/5.6",
+	// 	"Shutter Speed": "1/200 sec",
+	// 	"GPS": "Enabled",
+	// 	"Hello": "From Go!",
+	// }
+
+	// metaData, err := json.Marshal(metaDataObj)
+	// if err != nil {
+	// 	return err.Error()
+	// }
+
+
+	// Extract the raw EXIF data
+	rawExif, err := exif.SearchAndExtractExif(fileData)
+	if err != nil {
+		if err == exif.ErrNoExif {
+			fmt.Printf("No EXIF data.\n")
+			os.Exit(1)
+		}
+		log.Panic(err)
 	}
 
-	metaData, err := json.Marshal(metaDataObj)
+	// Get the flat EXIF data entries
+	entries, _, err := exif.GetFlatExifData(rawExif, nil)
 	if err != nil {
-		return err.Error()
+		log.Panic(err)
 	}
+
+	// Create a map to hold the EXIF data for JSON encoding
+	exifData := make(map[string]string)
+	for _, tag := range entries {
+		exifData[tag.TagName] = tag.Formatted
+	}
+
+	// Encode the EXIF data to JSON format
+	metaData, err := json.Marshal(exifData)
+	if err != nil {
+		log.Panic(err)
+	}
+
 
 	jsonObj := map[string]interface{}{
 		"success":   true,

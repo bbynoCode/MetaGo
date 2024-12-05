@@ -4,12 +4,19 @@ go 1.21
 
 toolchain go1.22.1
 
-require github.com/wailsapp/wails/v2 v2.9.2
+require (
+	github.com/dsoprea/go-exif/v3 v3.0.1
+	github.com/wailsapp/wails/v2 v2.9.2
+)
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect
+	github.com/dsoprea/go-logging v0.0.0-20200710184922-b02d349568dd // indirect
+	github.com/dsoprea/go-utility/v2 v2.0.0-20221003172846-a3e1774ef349 // indirect
+	github.com/go-errors/errors v1.4.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
+	github.com/golang/geo v0.0.0-20210211234256-740aa86cb551 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/jchv/go-winloader v0.0.0-20210711035445-715c2860da7e // indirect
 	github.com/labstack/echo/v4 v4.10.2 // indirect
@@ -34,6 +41,7 @@ require (
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 // replace github.com/wailsapp/wails/v2 v2.8.0 => /home/dex/go/pkg/mod

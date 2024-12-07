@@ -63,24 +63,36 @@ function App() {
               
               {renderPhoto}
               
-              <div className="w-1/2 ml-4">
+              {/* <div className="w-1/2 ml-4">
                   <h2 className="text-lg font-semibold mb-2">Photo Meta Data</h2>
                   <table className="min-w-full text-left">
                       <tbody>
                         <MetaDataTable metadata={parsedMetaData} />
                       </tbody>
                   </table>
+              </div> */}
+
+<             div className="w-1/2 ml-4">
+                <h2 className="text-lg font-semibold mb-2">Photo Meta Data</h2>
+                <div className="overflow-y-scroll max-h-[400px] border rounded-md p-2">
+                  <table className="min-w-full text-left">
+                    <tbody>
+                      <MetaDataTable metadata={parsedMetaData} />
+                    </tbody>
+                  </table>
+                </div>
               </div>
+
+
           </div>
           
-          
-          <div className="flex justify-between items-center mt-6">
-              <label className="flex items-center space-x-2">
-                  <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" />
-                    <span>Remove GPS Data</span>
-              </label>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md">Button</button>
+          <div className="flex justify-center mt-6">
+            <label className="flex items-center space-x-3 bg-white p-3 rounded-lg shadow-md border">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-blue-600 focus:ring-2 focus:ring-blue-400" />
+              <span className="text-gray-700 font-medium">Remove GPS Data</span>
+            </label>
           </div>
+          
         </div>
       </div>
             

@@ -1,5 +1,6 @@
 import { FileInfo } from '@/App';
 import { SelectFile } from "../wailsjs/go/main/App"
+import { SaveFile } from "../wailsjs/go/main/App"
 import {
     Menubar,
     MenubarContent,
@@ -26,7 +27,7 @@ const MenueBarUI = ({
           if (!file.success) {
             throw new Error("File selection failed");
           }
-          //console.log(file.fileBytes)
+
           setFileInfo({
             fileName: file.fileName,
             fileSize: file.fileSize,
@@ -40,6 +41,15 @@ const MenueBarUI = ({
         }
       };
 
+    const handleSaveFile = async () => {
+  
+      try {
+        await SaveFile(); // Call your save function with file path
+      } catch (error) {
+        console.error("Error saving file:", error);
+      }
+    };
+
       return( 
         
         <Menubar>
@@ -48,22 +58,11 @@ const MenueBarUI = ({
             <MenubarContent>
                 <MenubarItem onClick={handleSelectFile}>Open File </MenubarItem>
                 <MenubarSeparator />
-                {/*
-                <MenubarItem>Save</MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem>Save As</MenubarItem>
-                */}
+                
+                <MenubarItem onClick={handleSaveFile}>Save File</MenubarItem>
+               
             </MenubarContent> 
         </MenubarMenu>
-        
-       {/* <MenubarMenu>
-            <MenubarTrigger>Mode</MenubarTrigger>
-            <MenubarContent>
-                <MenubarItem>Single File </MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem>Multiple File</MenubarItem>
-            </MenubarContent>
-        </MenubarMenu> */}
         </Menubar>
 
       )

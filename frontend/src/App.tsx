@@ -63,15 +63,6 @@ function App() {
               
               {renderPhoto}
               
-              {/* <div className="w-1/2 ml-4">
-                  <h2 className="text-lg font-semibold mb-2">Photo Meta Data</h2>
-                  <table className="min-w-full text-left">
-                      <tbody>
-                        <MetaDataTable metadata={parsedMetaData} />
-                      </tbody>
-                  </table>
-              </div> */}
-
 <             div className="w-1/2 ml-4">
                 <h2 className="text-lg font-semibold mb-2">Photo Meta Data</h2>
                 <div className="overflow-y-scroll max-h-[400px] border rounded-md p-2">

@@ -9,6 +9,8 @@ import (
 	"log"
 	"fmt"
 	"github.com/dsoprea/go-exif/v3"
+	"github.com/dsoprea/go-jpeg-image-structure/v2"
+	"github.com/dsoprea/go-png-image-structure/v2"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -45,6 +47,8 @@ func (a *App) shutdown(ctx context.Context) {
 	// Perform your teardown here
 }
 
+var currOpenFile string = ""
+
 func (a *App) SelectFile() string {
 	file, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
 		Title: "Select a Photo",
@@ -53,6 +57,7 @@ func (a *App) SelectFile() string {
 		return err.Error()
 	}
 
+	currOpenFile = file
 	fileInfo, err := os.Lstat(file)
 
 	if err != nil {
@@ -77,21 +82,6 @@ func (a *App) SelectFile() string {
 	}
 
 	b64encode += base64.StdEncoding.EncodeToString(fileData)
-
-	// metaDataObj := map[string]interface{}{
-	// 	"Camera": "Nikon D3500",
-	// 	"Resolution": "6000x4000",
-	// 	"ISO": "200",
-	// 	"Aperture": "f/5.6",
-	// 	"Shutter Speed": "1/200 sec",
-	// 	"GPS": "Enabled",
-	// 	"Hello": "From Go!",
-	// }
-
-	// metaData, err := json.Marshal(metaDataObj)
-	// if err != nil {
-	// 	return err.Error()
-	// }
 
 
 	// Extract the raw EXIF data
@@ -138,5 +128,107 @@ func (a *App) SelectFile() string {
 	}
 
 	return string(jsonBytes)
+
+}
+
+func (a *App) SaveFile () {
+
+
+	outputFilePath, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+		Title: "Save Photo",
+	})
+	if err != nil {
+		log.Panic(err)
+	}
+
+	var inputFilePath string = currOpenFile
+
+	// Read the file's data using os.ReadFile
+	data, err := os.ReadFile(inputFilePath)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	mimeType := http.DetectContentType(data)
+
+	// Dectect file type
+	switch mimeType {
+	case "image/jpeg":
+		jmp := jpegstructure.NewJpegMediaParser()
+
+		intfc, err := jmp.ParseBytes(data)
+		if err != nil {
+			os.Exit(-1)
+		}
+	
+		sl := intfc.(*jpegstructure.SegmentList)
+
+		rootIb, err := sl.ConstructExifBuilder()
+		if err != nil {
+			os.Exit(-1)
+		}
+
+		//Remove IFD that contains GPS info
+		// Definition of tag ids can be found here https://exiftool.org/TagNames/EXIF.html
+		rootIb.DeleteAll(0x8825)
+		if err != nil {
+			os.Exit(-1)
+		}
+
+		err = sl.SetExif(rootIb)
+		if err != nil {
+			os.Exit(-1)
+		}
+
+		f, err := os.OpenFile(outputFilePath, os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			os.Exit(-1)
+		}
+		defer f.Close()
+	
+		err = sl.Write(f)
+		if err != nil {
+			os.Exit(-1)
+		}
+
+	case "image/png":
+		pmp := pngstructure.NewPngMediaParser()
+		intfc, err := pmp.ParseBytes(data)
+		if err != nil {
+			os.Exit(-1)
+		}
+
+		cs := intfc.(*pngstructure.ChunkSlice)
+		rootIb, err := cs.ConstructExifBuilder()
+		if err != nil {
+			os.Exit(-1)
+		}
+
+		//Remove IFD that contains GPS info
+		// Definition of tag ids can be found here https://exiftool.org/TagNames/EXIF.html
+		rootIb.DeleteAll(0x8825)
+		if err != nil {
+			os.Exit(-1)
+		}
+		//rootIb.PrintIfdTree()
+
+		err = cs.SetExif(rootIb)
+		if err != nil {
+			os.Exit(-1)
+		}
+
+		f, err := os.OpenFile(outputFilePath, os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			os.Exit(-1)
+		}
+		defer f.Close()
+	
+		err = cs.WriteTo(f)
+		if err != nil {
+			os.Exit(-1)
+		}
+
+	}
+
 
 }

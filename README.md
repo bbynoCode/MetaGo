@@ -1,40 +1,26 @@
-# README
+# MetaGo
 
 ## About
 
-This template comes with Vite, React, TypeScript, TailwindCSS and shadcn/ui.
+MetaGo is a desktop application that can help you view exif metadata of .jpg and .png files. 
 
-Built with `Wails v2.5.1` and [shadcn's CLI](https://ui.shadcn.com/docs/cli)
 
-### Using the Template
-```console
-wails init -n project-name -t https://github.com/Mahcks/wails-vite-react-tailwind-shadcnui-ts
-```
+## Development
 
-```console
-cd frontend
-```
+To build MetaGo from source you need a number of things installed on your system
 
-```console
-npm install
-```
+- Go version 1.22+ 
+- wails version 2.9.2
+- Nodejs version v21.7.3
 
-### Installing Components
-To install components, use shadcn's CLI tool to install
+- Use ``` go mod tidy ``` to install the dependencies found in the go.mod file. 
 
-More info here: https://ui.shadcn.com/docs/cli#add
+## Usage
 
-Example:
-```console
-npx shadcn-ui@latest add [component]
-```
+You can compile from source using the ```command wails build``` or you can download the precompiled binarys found in the releases.
 
-## Live Development
+You should use MetaGo on the example images provided in the ExampleImage folder and in the releases.
 
-To run in live development mode, run `wails dev` in the project directory. In another terminal, go into the `frontend`
-directory and run `npm run dev`. The frontend dev server will run on http://localhost:34115. Connect to this in your
-browser and connect to your application.
+## Disclaimer
 
-## Building
-
-To build a redistributable, production mode package, use `wails build`.
+This program is very much a work in progress. Any file loss is not the fault of the author. Only use this program on photos that you have backups of. 
